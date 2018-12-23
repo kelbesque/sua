@@ -1,17 +1,27 @@
-use std::fmt;
-
 extern crate actix_web;
-use actix_web::{Path, Responder};
+extern crate chrono;
 
+#[macro_use]
+extern crate diesel;
+
+extern crate dotenv;
 extern crate serde;
-extern crate serde_json;
 
 #[macro_use]
 extern crate serde_derive;
 
+extern crate serde_json;
+
+use std::fmt;
+
+use actix_web::{Path, Responder};
+use serde::ser::{Serialize, Serializer};
 use serde_json::{Error};
 
-use serde::ser::{Serialize, Serializer};
+pub mod db;
+pub mod models;
+pub mod schema;
+pub mod posts;
 
 const HEALTH_OK: Health = Health{
     name: "sua-server",
