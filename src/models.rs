@@ -1,6 +1,6 @@
 use serde_json;
 
-#[derive(Queryable)]
+#[derive(Serialize, Deserialize, Queryable)]
 pub struct Post {
     pub id: i32,
     pub src: i32,
@@ -12,8 +12,10 @@ pub struct Post {
     pub time: chrono::NaiveDateTime
 }
 
-#[derive(Queryable)]
+#[derive(Serialize, Deserialize, Queryable)]
 pub struct Account {
     pub id: i32,
     pub url: String
 }
+
+
