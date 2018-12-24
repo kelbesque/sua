@@ -18,6 +18,7 @@ use actix_web::{Path, Responder};
 use serde::ser::{Serialize, Serializer};
 use serde_json::{Error};
 
+pub mod accounts;
 pub mod db;
 pub mod models;
 pub mod schema;

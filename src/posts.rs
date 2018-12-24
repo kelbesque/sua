@@ -7,6 +7,7 @@ use chrono::offset;
 use diesel::pg::PgConnection;
 use diesel::prelude::*;
 
+use crate::accounts;
 use crate::db;
 use crate::models;
 use crate::*;
@@ -17,7 +18,7 @@ use crate::schema::accounts::dsl as account_dsl;
 pub struct Post {
     pub id: i32,
     pub from: String,
-    pub to: String,
+    pub to: Vec<String>,
     pub privacy: i32,
     pub content_warning: Option<String>,
     pub text: Option<String>,
@@ -28,11 +29,11 @@ pub struct Post {
 impl Post {
     fn new(post: models::Post,
            from: models::Account,
-           to: models::Account) -> Post {
+           to: Vec<models::Account>) -> Post {
         Post {
             id: post.id,
             from: from.url,
-            to: to.url,
+            to: to.iter().map(|a| { a.url.clone() }).collect::<Vec<String>>(),
             privacy: post.privacy,
             content_warning: post.content_warning,
             text: post.text,
@@ -64,8 +65,7 @@ pub fn get_user_timeline(info: Path<(i32,)>) -> Json<Vec<Post>> {
 
         let from = account_dsl::accounts.find(post.src).first::<models::Account>(&connection)
             .expect("Error loading `from` account");
-        let to = account_dsl::accounts.find(post.dest).first::<models::Account>(&connection)
-            .expect("Error loading `to` account");
+        let to = accounts::get_dests_for_post(&post, Some(&connection));
 
         posts.push(Post::new(post, from, to));
     }
