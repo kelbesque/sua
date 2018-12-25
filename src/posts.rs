@@ -32,8 +32,14 @@ impl Post {
            to: Vec<models::Account>) -> Post {
         Post {
             id: post.id,
-            from: from.url,
-            to: to.iter().map(|a| { a.url.clone() }).collect::<Vec<String>>(),
+            from: {
+                let d = accounts::decompose_url(&from.url).unwrap();
+                format!("{}@{}", d.1, d.0)
+            },
+            to: to.iter().map(|a| {
+                    let d = accounts::decompose_url(&a.url).unwrap();
+                    format!("{}@{}", d.1, d.0)
+                }).collect::<Vec<String>>(),
             privacy: post.privacy,
             content_warning: post.content_warning,
             text: post.text,

@@ -1,9 +1,23 @@
 use diesel::pg::PgConnection;
 use diesel::prelude::*;
 
+use regex::Regex;
+
 use crate::db;
 use crate::models::{Account, Post, PostDest};
 use crate::*;
+
+pub fn decompose_url(url: &String) -> Option<(String, String)> {
+    let re = Regex::new(r"^https?://([^/]+)/?.*/([^/]+)$").unwrap();
+
+    match re.captures(url) {
+        Some(m) => Some(
+                (String::from(m.get(1).unwrap().as_str()),
+                String::from(m.get(2).unwrap().as_str()))
+                ),
+        None => None
+    }
+}
 
 pub fn get_dests_for_post(post: &Post, connection: Option<&PgConnection>) -> Vec<models::Account> {
     use crate::schema::accounts::dsl::{accounts, id, url};

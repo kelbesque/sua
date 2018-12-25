@@ -5,6 +5,9 @@ extern crate chrono;
 extern crate diesel;
 
 extern crate dotenv;
+
+extern crate regex;
+
 extern crate serde;
 
 #[macro_use]
